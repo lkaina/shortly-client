@@ -82,6 +82,7 @@ h1 {
 
 .link .lastVisit {
   float: right;
+  margin-top: 28px;
   margin-right: 10px;
   margin-left: 20px;
   font-size: 14px;
