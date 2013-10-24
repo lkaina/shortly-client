@@ -18,9 +18,7 @@ window.Shortly = Backbone.View.extend({
     events: {
         "click li a.index": "renderIndexView",
         "click li a.create": "renderCreateView",
-        "keyup li input.filter": "renderFilterView",
-        "click li a.visits": "sortVisitsCount",
-        "click li a.lastVisit": "sortLastVisit"
+        "keyup li input.filter": "renderFilterView"
     },
 
     initialize: function() {
