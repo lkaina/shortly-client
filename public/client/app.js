@@ -4,8 +4,8 @@ window.Shortly = Backbone.View.extend({
       <h1>Shortly</h1> \
       <div class="navigation"> \
       <ul> \
-        <li><a href="#" class="index">All Links</a></li> \
-        <li><a href="#" class="create">Shorten</a></li> \
+        <li><a href="" class="index">All Links</a></li> \
+        <li><a href="" class="create">Shorten</a></li> \
         <li> \
           <form> \
             <input class="filter" type="text" name="searchText"> \
@@ -16,20 +16,33 @@ window.Shortly = Backbone.View.extend({
       <div id="container"></div>'),
 
     events: {
-        "click li a.index": "renderIndexView",
-        "click li a.create": "renderCreateView",
+        "click li a.index": "indexView",
+        "click li a.create": "createView",
         "keyup li input.filter": "renderFilterView"
     },
 
     initialize: function() {
-        console.log("Shortly is running");
-        $('body').append(this.render().el);
-        this.renderIndexView(); // default view
+      console.log("Shortly is running");
+      $('body').append(this.render().el);
+      this.router = new Shortly.Router({el: this.$el.find('#container')});
+      this.router.on('route', this.updateNav, this);
+
+      Backbone.history.start({pushState: true});
     },
 
     render: function() {
-        this.$el.html(this.template());
-        return this;
+      this.$el.html(this.template());
+      return this;
+    },
+
+    indexView: function(e) {
+      e && e.preventDefault();
+      this.router.navigate('/', {trigger:true});
+    },
+
+    createView: function(e) {
+      e && e.preventDefault();
+      this.router.navigate('/create', {trigger:true});
     },
 
     renderFilterView: function(e) {
@@ -46,31 +59,14 @@ window.Shortly = Backbone.View.extend({
       } else {
         $('.link').css("display", "block");
       }
-      // $(this).css("display", "block");
-    },
-
-    renderIndexView: function(e) {
-        e && e.preventDefault();
-        var links = new Shortly.Links();
-        var linksView = new Shortly.LinksView({
-            collection: links
-        });
-        this.$el.find('#container').html(linksView.render().el);
-        this.updateNav('index');
-    },
-
-    renderCreateView: function(e) {
-        e && e.preventDefault();
-        var linkCreateView = new Shortly.LinkCreateView();
-        this.$el.find('#container').html(linkCreateView.render().el);
-        this.updateNav('create');
     },
 
     updateNav: function(className) {
-        this.$el.find('.navigation li a')
-            .removeClass('selected')
-            .filter('.' + className)
-            .addClass('selected');
+      // debugger;
+      this.$el.find('.navigation li a')
+          .removeClass('selected')
+          .filter('.' + className)
+          .addClass('selected');
     }
 
 });

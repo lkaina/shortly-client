@@ -59,6 +59,10 @@ get '/' do
     erb :index
 end
 
+get '/create' do
+    erb :index
+end
+
 get '/links' do
     links = Link.order("visits DESC")
     links.map { |link|
@@ -81,6 +85,11 @@ get '/:url' do
     raise Sinatra::NotFound if link.nil?
     link.clicks.create!
     redirect link.url
+end
+
+get '/:code/stats' do
+    @link = Link.find_by_code params[:code]
+    erb :stats
 end
 
 ###########################################################

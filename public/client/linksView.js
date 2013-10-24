@@ -22,14 +22,13 @@ Shortly.LinksView = Backbone.View.extend({
 
   sortLastVisit: function(e){
     e && e.preventDefault();
-    this.collection = this.collection.sortByLastVisit();
+    this.collection.sortByColumn('updated_at');
     this.addAll();
-    console.log(this.collection);
   },
 
   sortVisitsCount: function(e){
     e && e.preventDefault();
-    this.collection = this.collection.sortByVisit();
+    this.collection.sortByColumn('visits');
     this.addAll();
   },
 
@@ -39,12 +38,13 @@ Shortly.LinksView = Backbone.View.extend({
   },
 
   addAll: function(){
+    this.$el.html(this.template());
     this.collection.forEach(this.addOne, this);
   },
 
   addOne: function(item){
     var view = new Shortly.LinkView( {model: item} );
-    this.$el.html(this.template()).append(view.render().el);
+    this.$el.append(view.render().el);
   }
 
 });
