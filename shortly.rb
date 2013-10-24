@@ -48,7 +48,7 @@ class Link < ActiveRecord::Base
 end
 
 class Click < ActiveRecord::Base
-    belongs_to :link, counter_cache: :visits
+    belongs_to :link, counter_cache: :visits, :touch => true
 end
 
 ###########################################################
@@ -72,6 +72,7 @@ post '/links' do
     raise Sinatra::NotFound unless uri.absolute?
     link = Link.find_by_url(uri.to_s) ||
            Link.create( url: uri.to_s, title: get_url_title(uri) )
+    link.touch
     link.as_json.merge(base_url: request.base_url).to_json
 end
 

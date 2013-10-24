@@ -80,6 +80,13 @@ h1 {
   font-weight: 600;
 }
 
+.link .lastVisit {
+  float: right;
+  margin-right: 10px;
+  margin-left: 20px;
+  font-size: 14px;
+}
+
 .link .title {
   font-weight: 600;
 }

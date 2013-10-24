@@ -9,7 +9,6 @@ window.Shortly = Backbone.View.extend({
         <li> \
           <form> \
             <input class="filter" type="text" name="searchText"> \
-            <input type="submit" value="Search"> \
           </form> \
         </li> \
       </ul> \
@@ -19,7 +18,9 @@ window.Shortly = Backbone.View.extend({
     events: {
         "click li a.index": "renderIndexView",
         "click li a.create": "renderCreateView",
-        "keyup li input.filter": "renderFilterView"
+        "keyup li input.filter": "renderFilterView",
+        "click li a.visits": "sortVisitsCount",
+        "click li a.lastVisit": "sortLastVisit"
     },
 
     initialize: function() {
