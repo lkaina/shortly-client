@@ -11,6 +11,7 @@ window.Shortly = Backbone.View.extend({
             <input class="filter" type="text" name="searchText"> \
           </form> \
         </li> \
+        <li><a href="http://localhost:4567/logout" class="logout">Log Out</a> \
       </ul> \
       </div> \
       <div id="container"></div>'),
@@ -18,6 +19,7 @@ window.Shortly = Backbone.View.extend({
     events: {
         "click li a.index": "indexView",
         "click li a.create": "createView",
+        "click li a.logout": "logout",
         "keyup li input.filter": "renderFilterView"
     },
 

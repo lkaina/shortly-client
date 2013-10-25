@@ -69,6 +69,11 @@ get '/' do
     erb :login
 end
 
+get '/logout' do
+    session.clear
+    redirect '/'
+end
+
 post '/' do
     if params[:register].nil?
         user = User.find_by_username(params[:username])
