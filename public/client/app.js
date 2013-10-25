@@ -37,7 +37,7 @@ window.Shortly = Backbone.View.extend({
 
     indexView: function(e) {
       e && e.preventDefault();
-      this.router.navigate('/', {trigger:true});
+      this.router.navigate('/home', {trigger:true});
     },
 
     createView: function(e) {

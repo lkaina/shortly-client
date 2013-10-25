@@ -38,6 +38,8 @@ ActiveRecord::Base.include_root_in_json = false
 class Link < ActiveRecord::Base
     attr_accessible :url, :code, :visits, :title
 
+    belongs_to :user
+
     has_many :clicks
 
     validates :url, presence: true
@@ -51,11 +53,43 @@ class Click < ActiveRecord::Base
     belongs_to :link, counter_cache: :visits, :touch => true
 end
 
+class User < ActiveRecord::Base
+    attr_accessible :username, :password
+
+    has_many :links
+end
+
+
 ###########################################################
 # Routes
 ###########################################################
+enable :sessions
 
 get '/' do
+    erb :login
+end
+
+post '/' do
+    if params[:register].nil?
+        user = User.find_by_username(params[:username])
+        if user.password == params[:password]
+            session[:username] = user.username
+            redirect '/home'
+        else
+            [404, "Error"]
+        end
+    else
+        user = User.new(username: params[:username], password: params[:password])
+        session[:username] = user.username
+        if user.save
+            redirect '/home'
+        else
+            redirect '/'
+        end
+    end
+end
+
+get '/home' do
     erb :index
 end
 
@@ -64,7 +98,8 @@ get '/create' do
 end
 
 get '/links' do
-    links = Link.order("visits DESC")
+    user = User.find_by_username(session[:username])
+    links = user.links.all
     links.map { |link|
         link.as_json.merge(base_url: request.base_url)
     }.to_json
@@ -74,8 +109,9 @@ post '/links' do
     data = JSON.parse request.body.read
     uri = URI(data['url'])
     raise Sinatra::NotFound unless uri.absolute?
-    link = Link.find_by_url(uri.to_s) ||
-           Link.create( url: uri.to_s, title: get_url_title(uri) )
+    user = User.find_by_username(session[:username])
+    link = user.links.find_by_url(uri.to_s) ||
+           user.links.create( url: uri.to_s, title: get_url_title(uri), user_id: user.id)
     link.touch
     link.as_json.merge(base_url: request.base_url).to_json
 end
