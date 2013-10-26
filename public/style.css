@@ -80,14 +80,6 @@ h1 {
   font-weight: 600;
 }
 
-.link .lastVisit {
-  float: right;
-  margin-top: 28px;
-  margin-right: 10px;
-  margin-left: 20px;
-  font-size: 14px;
-}
-
 .link .title {
   font-weight: 600;
 }
@@ -129,7 +121,7 @@ form input[type=text] {
   height: 80px;
 }
 
-.creator img.spinner {
+img.spinner {
   height: 46px;
   margin-bottom: 5px;
   padding: 10px;
