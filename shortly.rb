@@ -83,6 +83,12 @@ get '/:url' do
     redirect link.url
 end
 
+get '/:code/stats' do
+    link = Link.find_by_code params[:code]
+    clicks = link.clicks.all
+    clicks.to_json
+end
+
 ###########################################################
 # Utility
 ###########################################################

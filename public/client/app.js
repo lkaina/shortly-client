@@ -1,4 +1,4 @@
-var app = angular.module('Shortly', []);
+var app = angular.module('Shortly', ['ui.bootstrap']);
 
 app.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider){
   $routeProvider.when('/', {
@@ -14,7 +14,19 @@ app.config(['$routeProvider', '$locationProvider', function($routeProvider, $loc
   $locationProvider.html5Mode(true);
 }]);
 
-app.controller('HomeController', function($scope, $http){
+app.filter('moment', function() {
+  return function(dateString) {
+    return moment(dateString).fromNow();
+  };
+});
+
+app.filter('momentDate', function() {
+  return function(dateString) {
+    return moment(dateString).calendar();
+  };
+});
+
+app.controller('HomeController', function($scope, $http, $modal, $log){
   $http.get('/links')
   .success(function(data, status){
     $scope.links = data;
@@ -22,10 +34,37 @@ app.controller('HomeController', function($scope, $http){
   .error(function(){
     console.log('error retrieving links');
   });
+  $scope.modal = function(link){
+    $http.get('/'+link.code+'/stats')
+    .success(function(data, status){
+      var modalInstance = $modal.open({
+        templateUrl: 'myModalContent.html',
+        controller: 'ModalInstanceController',
+        resolve: {
+          data: function(){
+            return [data, link];
+          }
+        }
+      });
+    })
+    .error(function(){
+      console.log('error on modal post');
+    });
+  };
+});
+
+app.controller('ModalInstanceController', function($scope, $modalInstance, data){
+  $scope.clicks = data[0];
+  $scope.link = data[1];
+  $scope.clickCount = $scope.clicks.length;
+  $scope.ok = function() {
+    $modalInstance.dismiss('cancel');
+  };
 });
 
 app.controller('CreateController', function($scope, $http){
   $scope.shortenLink = function(url){
+    $scope.url = '';
     $http.post('/links', {url:url})
     .success(function(){
       console.log('successfully passed url');
@@ -35,3 +74,8 @@ app.controller('CreateController', function($scope, $http){
     });
   };
 });
+
+  // .when('/:code/stats', {
+  //   controller: 'StatsController',
+  //   templateUrl: 'client/views/stats.html'
+  // })
